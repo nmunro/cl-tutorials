@@ -8,7 +8,8 @@
     (dotimes (y 3)
       (if (= y 2)
           (format t "~A~%"  (aref board x y))
-          (format t "~A | " (aref board x y))))))
+          (format t "~A | " (aref board x y))))
+    (format t "~%")))
 
 (defun update-board (board coords player)
   (setf (aref board (getf coords :x) (getf coords :y)) player))
@@ -78,7 +79,6 @@
         ((game-over-p board))
 
       (display-board board)
-      (format t "~%")
 
       (if (evenp turn-counter)
           (let ((coords (player-turn board)))
