@@ -73,9 +73,9 @@
 
       (t nil))))
 
-(defun game (&key (board (make-array '(3 3) :initial-element '-)))
-  (let ((turn-counter (1+ (random 2 (make-random-state t)))))
-    (do ()
+(defun game ()
+  (let ((board (make-array '(3 3) :initial-element '-)))
+    (do ((turn-counter (1+ (random 2 (make-random-state t))) (1+ turn-counter)))
         ((game-over-p board))
 
       (display-board board)
@@ -85,9 +85,7 @@
             (update-board board coords "x"))
 
           (let ((coords (cpu-turn board)))
-            (update-board board coords "o")))
-
-      (incf turn-counter))
+            (update-board board coords "o"))))
 
     (display-board board)
     (format t "Game over!~%")))
