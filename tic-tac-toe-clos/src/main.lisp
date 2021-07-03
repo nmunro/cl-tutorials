@@ -89,11 +89,9 @@
       (force-output)
 
       (if (evenp turn-counter)
-          (update-board board (turn human board) "x")
-          (update-board board (turn cpu   board) "o")))
+          (update-board board (turn human board) (icon human))
+          (update-board board (turn cpu   board) (icon cpu))))
 
     (display-board board)
     (format t "Game Over!~%")
     (force-output)))
-
-(game)
