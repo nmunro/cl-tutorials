@@ -1,5 +1,6 @@
 (defpackage tic-tac-toe-clos
-  (:use :cl))
+  (:use :cl)
+  (:export #:game))
 (in-package :tic-tac-toe-clos)
 
 (defun display-board (board)
