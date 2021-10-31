@@ -27,14 +27,14 @@
 
 (let ((fail t))
   (restart-case (fake-io :fail fail)
-    (retry-without-errors (new-fail)
-      :report "Pass nil"
-      :interactive read-new-value
-      (setf fail new-fail)
-      (fake-io :fail fail))
-
     (do-nothing ()
-      "Done with this")))
+      :report "Return String"
+      "Done with this")
+
+    (retry-without-errors (new-fail)
+      :report "Accept User Input"
+      :interactive read-new-value
+      (fake-io :fail new-fail))))
 
 (handler-case (fake-io :fail t)
   (file-io-error () (fake-io :fail nil))
