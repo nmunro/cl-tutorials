@@ -1,48 +1,50 @@
-(defpackage 5b-condition-system
-  (:use :cl)
-  (:export #:main))
+(defpackage error-handling
+  (:use :cl))
 
-(in-package 5b-condition-system)
+(in-package :error-handling)
 
-(define-condition file-io-error (error)
+(define-condition div-zero-error (error)
   ((message :initarg :message :reader message)))
 
-(define-condition another-file-io-error (error)
-  ((message :initarg :message :reader message)))
+(defun div-fn (a b)
+  (restart-case
+    (if (/= b 0)
+      (/ a b)
+      (error 'div-zero-error :message "Can't divide by zero"))
 
-(defun fake-io (&key (fail nil fail-p) (message "Nope!"))
-  (cond
-    ((not fail-p)
-     (if (evenp (random 100))
-         (error 'file-io-error :message "Error 1")
-         "Success"))
+    (return-zero ()
+      0)
 
-    (fail
-     (error 'another-file-io-error :message "Error 2"))
+    (return-value (value)
+      value)
 
-    (t "success")))
+    (recalc-using (value)
+      (div-fn a value))))
 
-(defun read-new-value ()
-  (format t "Enter a new value: ")
-  (force-output)
-  (multiple-value-list (eval (read))))
+(defun alpha ()
+  (handler-bind
+      ((div-zero-error
+         #'(lambda (err)
+             (format t "Alpha-Error: ~A~%" (message err))
+             (invoke-restart 'return-zero))))
+    (div-fn 1 0)))
 
-(let ((fail t))
-  (restart-case (fake-io :fail fail)
-    (do-nothing ()
-      :report "Return String"
-      "Done with this")
+(defun beta (val)
+  (handler-bind
+      ((div-zero-error
+         #'(lambda (err)
+             (format t "Beta-Error: ~A~%" (message err))
+             (invoke-restart 'return-value val))))
+    (div-fn 1 0)))
 
-    (retry-without-errors (new-fail)
-      :report "Accept User Input"
-      :interactive read-new-value
-      (fake-io :fail new-fail))))
+(defun gamma (val)
+  (handler-bind
+      ((div-zero-error
+         #'(lambda (err)
+             (format t "Gamma-Error: ~A~%" (message err))
+             (invoke-restart 'recalc-using val))))
+    (div-fn 1 0)))
 
-(handler-case (fake-io)
-  (file-io-error (err)
-    (format t "~A~%" (message err))
-    (fake-io :fail nil))
-
-  (another-file-io-error (err)
-    (format t "~A~%" (message err))
-    (fake-io :fail nil)))
+(alpha)
+(beta 1)
+(gamma 2)
