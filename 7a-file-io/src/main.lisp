@@ -1,6 +1,5 @@
 (defpackage 7a-file-io
-  (:use :cl)
-  (:export #:main))
+  (:use :cl))
 
 (in-package 7a-file-io)
 
