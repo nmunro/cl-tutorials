@@ -1,11 +1,9 @@
 (defpackage 8e-functional-programming
-  (:use :cl)
-  (:export #:main))
+  (:use :cl))
 
 (in-package 8e-functional-programming)
 
 ;; 1) What are they?
-
 (print (lambda (x) (* x x)))
 
 ;; 2) Using them with higher order functions.
